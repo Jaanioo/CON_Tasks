@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Conversion</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>File Conversion</h1>
+<form id="uploadForm" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput">
+    <button type="submit">Upload</button>
+</form>
+
+<div id="originalText" style="margin-top: 20px;">
+    <h2>Original Text:</h2>
+    <pre id="originalContent"></pre>
+</div>
+
+<div id="convertedText" style="margin-top: 20px;">
+    <h2>Converted Text:</h2>
+    <pre id="convertedContent"></pre>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#uploadForm').on('submit', function(event) {
+            event.preventDefault();
+            var fileInput = $('#fileInput')[0];
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                url: '{{ path('file_convert') }}',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#originalContent').text(response.originalText);
+                    $('#convertedContent').text(response.convertedText);
+                },
+                error: function() {
+                    console.log('Failed to convert file.');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

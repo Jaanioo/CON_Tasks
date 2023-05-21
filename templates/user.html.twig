@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>User Details</h1>
+
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Value</th>
+        <th>Edit</th>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td><span id="nameValue">{{ data.name }}</span></td>
+        <td><input type="text" id="name" name="name" value="{{ data.name }}"></td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td><span id="emailValue">{{ data.email }}</span></td>
+        <td><input type="text" id="email" name="email" value="{{ data.email }}"></td>
+    </tr>
+    <tr>
+        <td>Gender</td>
+        <td><span id="genderValue">{{ data.gender }}</span></td>
+        <td><input type="text" id="gender" name="gender" value="{{ data.gender }}"></td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td><span id="statusValue">{{ data.status }}</span></td>
+        <td><input type="text" id="status" name="status" value="{{ data.status }}"></td>
+    </tr>
+</table>
+
+<button id="updateButton">Update</button>
+
+<script>
+    $(document).ready(function() {
+        var userId = window.location.pathname.split('/').pop();
+
+        function updateUserDetails() {
+            var name = $('#name').val();
+            var email = $('#email').val();
+            var gender = $('#gender').val();
+            var status = $('#status').val();
+
+            var requestData = {
+                name: name,
+                email: email,
+                gender: gender,
+                status: status
+            };
+
+            $.ajax({
+                url: '/edit/' + userId,
+                method: 'PUT',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                success: function(response) {
+                    console.log('User details updated successfully:', response);
+                    window.location.href = '/user/' + userId;
+                },
+                error: function() {
+                    console.log('Failed to update user details.');
+                }
+            });
+        }
+
+        $('#updateButton').on('click', function() {
+            updateUserDetails();
+        });
+    });
+</script>
+</body>
+</html>

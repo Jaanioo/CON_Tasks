@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Users</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>List of Users</h1>
+
+<form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Search">
+    <button type="submit">Search</button>
+</form>
+
+<table id="userTable">
+</table>
+
+<script>
+    $(document).ready(function() {
+        function getUsers(query) {
+            $.ajax({
+                url: '/users/search',
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    query: query
+                },
+                success: function(response) {
+                    var userList = $('#userTable');
+
+                    userList.empty();
+
+                    response.forEach(function(user) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(user.id));
+                        row.append($('<td>').text(user.name));
+                        row.append($('<td>').text(user.email));
+                        row.append($('<td>').text(user.gender));
+                        row.append($('<td>').text(user.status));
+
+                        var button = $('<button>')
+                            .text('Edit')
+                            .data('id', user.id)
+                            .on('click', function() {
+                                var userId = $(this).data('id');
+                                window.location.href = '/user/' + userId;
+                            });
+
+                        row.append($('<td>').append(button));
+                        userList.append(row);
+                    });
+                },
+                error: function() {
+                    console.log('Failed to fetch user list.');
+                }
+            });
+        }
+
+        $('#searchForm').on('submit', function(event) {
+            event.preventDefault();
+            var query = $('#searchInput').val();
+            getUsers(query);
+        });
+
+        getUsers('');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Validate PESEL</h1>
+
+    {% if errorMessage %}
+        <div class="alert alert-danger">{{ errorMessage }}</div>
+    {% endif %}
+
+    {{ form_start(form) }}
+    {{ form_row(form.pesel) }}
+    {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+{% endblock %}
